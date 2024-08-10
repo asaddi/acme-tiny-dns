@@ -7,6 +7,7 @@ if [ -z "$KEYFILE" ]; then
 fi
 NSUPDATE="nsupdate -k $KEYFILE"
 NSSERVER=${NSSERVER:-localhost}
+DOMAINSUFFIX=${DOMAINSUFFIX:-""}
 TTL=${TTL:-60}
 
 if [ $# -lt 2 ]; then
@@ -16,12 +17,12 @@ fi
 
 case "$1" in
     setup)
-        DOMAIN="$2"
+        DOMAIN="$2$DOMAINSUFFIX"
         KEYAUTH="$3"
         printf "server %s\nupdate delete _acme-challenge.%s. TXT\nupdate add _acme-challenge.%s. %d TXT \"%s\"\nsend\n" $NSSERVER $DOMAIN $DOMAIN $TTL $KEYAUTH | $NSUPDATE
         ;;
     teardown)
-        DOMAIN="$2"
+        DOMAIN="$2$DOMAINSUFFIX"
         printf "server %s\nupdate delete _acme-challenge.%s. TXT\nsend\n" $NSSERVER $DOMAIN | $NSUPDATE
         ;;
     *)
