@@ -1,12 +1,12 @@
 FROM python:3.12-slim
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN --mount=type=cache,target=/var/cache/apt \
-    apt-get update \
-    && apt-get install -y \
-        bind9-dnsutils \
-    && rm -rf /var/lib/apt/lists/*
+RUN --mount=type=cache,target=/var/cache/apt <<EOF
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get install -y \
+  bind9-dnsutils
+rm -rf /var/lib/apt/lists/*
+EOF
 
 WORKDIR /app
 COPY . .
