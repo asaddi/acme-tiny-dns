@@ -1,3 +1,27 @@
+# About this acme-tiny-dns fork
+
+This is a hard fork of the [acme-tiny](https://github.com/diafygi/acme-tiny) script converted to use [DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge) for domain verification. I did this conversion some time ago (March 2017) and have been using it ever since for both domains hosted out in the cloud (e.g. mail servers which normally don't run a web server for HTTP-01 challenge) as well as my homelab which is naturally inaccesible from outside.
+
+As the nature of DNS systems will vary wildly, most of that magic (creating/updating/deleting a specific TXT record for your domain) is left up to a "hook script" which you create and pass to acme-tiny. An example which uses bind's `nsupdate` tool is provided.
+
+Example usage:
+
+    python acme_tiny.py --account-key ./account.key --csr ./domain.csr --dns-hook ./nsupdate_dns_hook > signed_chain.crt
+
+The DNS hook script is called twice per domain with varying arguments:
+
+    your_dns_hook_script setup <domain> <contents-of-txt-record>
+
+and then
+
+    your_dns_hook_script teardown <domain>
+
+See the example script for details.
+
+I'll try to keep it up-to-date with the upstream when and where it makes sense, but for the longest time it was at the `4.1.0` tag which has worked fine.
+
+Note that as of this writing (March 2026), there's an upcoming [DNS-PERSIST-01](https://letsencrypt.org/2026/02/18/dns-persist-01) challenge type which will probably (and thankfully) obsolete the need for this specific fork.
+
 # acme-tiny
 
 [![Tests](https://github.com/diafygi/acme-tiny/actions/workflows/full-tests-with-coverage.yml/badge.svg?branch=main)](https://github.com/diafygi/acme-tiny/actions/workflows/full-tests-with-coverage.yml)
